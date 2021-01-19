@@ -42,7 +42,7 @@ One
 00000000000000000000000000000001
 ~~~
 
-A thousand
+One thousand
 ~~~
 00000000000000000000010000000000
 ~~~
@@ -53,7 +53,7 @@ Speed of light (299,792,458 m/s)
   \__299___/\__792___/\__458___/
 ~~~
 
-A billion
+One billion
 ~~~
      /¯10¯¯\
 01000000101000000000000000000000
@@ -173,7 +173,7 @@ Although the quantities are approximated it is still remarkable that 16 bit is e
 
 ## Going large
 
-With a 64 bit value only **60** bits are usable to store decimal digits. With a 128 bit value only **124** bits are usable to store decimal digits.
+In a 64 bit value only **60** bits are usable to store decimal digits. In a 128 bit value only **124** bits are usable to store decimal digits.
 
 One bit is needed to store the sign, so in both cases there are three bits left for the extension:
 
@@ -221,7 +221,7 @@ One (15 significant figures)
                \__100___/
 ~~~
 
-Hundred quadrillions (18 significant figures)
+One hundred quadrillion (18 significant figures)
 ~~~
 0001000110010000000000000000000000000000000000000000000000000000
     \__100___/
