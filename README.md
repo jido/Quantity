@@ -2,11 +2,11 @@
 Number format to represent quantities for display and storage
 
 * Efficient conversion to and from text
-* What you see is what you get: it's a decimal format so no internal rounding, no hidden digits
+* What you see is what you get: it's a decimal format which means _no internal rounding, no hidden digits_
 * Supports native equality and comparison
 * Also suitable for fixed point, rational numbers (using two quantities), floating point (with additional byte for exponent)
-* Numbers from 0 to 1,000,000,000 stored exactly
-* Larger numbers in reduced precision, including a value for Infinity
+* Numbers from _0_ to _1,000,000,000_ stored exactly
+* Larger numbers in reduced precision, including a value for _Infinity_
 
 ## Format
 
@@ -32,8 +32,8 @@ u
   = units
 
 * Negative numbers stored using two's complement
-* Decimal digits are stored in groups of 3 digits from 000 to 999
-* The extension bit allows to represent numbers from a billion onwards as described below
+* Decimal digits are stored in groups of three digits from **000** to **999**
+* The _extension_ bit allows to represent numbers from a billion onwards as described below
 
 ### Examples
 
@@ -81,7 +81,7 @@ Each group of three digits is stored as a 10-bit integer. Binary representation:
 100-999 : 0001100100 - 1111100111
 ~~~
 
-To extend the range of numbers, the head decimal digit is dropped. This frees up 3 bits which are used to store an exponent:
+To extend the range of numbers, the head decimal digit is dropped. This frees up three bits which are used to store an exponent:
 
 ~~~
 eeemmmmmmm
@@ -91,38 +91,38 @@ e
   = exponent (10ⁿ)
 
 m
-  = millions, ranges from 10 to 99
+  = millions, ranges from _10_ to _99_
 
-Note that the first decimal digit cannot be zero because the native equality and comparison property mandates it.
+Note that the first decimal digit cannot be zero because the _native equality and comparison_ property mandates it.
 
-The exponent ranges from 2 to 8 (`000` to `110`).
+The exponent ranges from _2_ to _8_ (`000` to `110`).
 
 The exponent bit pattern `111` is reserved to further extend the quantity by dropping one more decimal digit.
-The next extension uses again a three-bit exponent pattern:
+The next extension uses again a _three-bit exponent_ pattern:
 
 ~~~
 111eeemmmm
 ~~~
 
 e
-  = exponent (10ⁿ) ranges from 10 to 16
+  = exponent (10ⁿ) ranges from _10_ to _16_
 
 m
-  = millions, ranges from 1 to 9
+  = millions, ranges from _1_ to _9_
 
 The exponent bit pattern `111` is reserved to further extend the quantity by dropping one more decimal digit.
-The next extension uses a four-bit exponent pattern:
+The next extension uses a _four-bit exponent_ pattern:
 
 ~~~
 111111eeee
 ~~~
 
 e
-  = exponent (10ⁿ) ranges from 18 to 32
+  = exponent (10ⁿ) ranges from _18_ to _32_
 
-At this point there are no bits left to store millions. The quantity only stores units and thousands.
+At this point there are no bits left to store millions. The quantity only stores thousands and units.
 
-The same sequence of 3, 3 and 4 bits for the exponent repeats for each group of three decimal digits (thousands and units).
+The same sequence of _3, 3 and 4_ bits for the exponent repeats for each group of three decimal digits (thousands and units).
 
 The final extension looks like:
 
@@ -130,15 +130,15 @@ The final extension looks like:
 0111111111111111111111111111eeee
 ~~~
 
-There is no space left to store decimal digits, so the quantity just corresponds to a unit of magnitude 10ⁿ where n goes up to 95.
+There is no space left to store decimal digits, so the quantity just corresponds to a unit of magnitude 10ⁿ where _n_ goes up to 95.
 
-The exponent bit pattern `1111` is reserved for Infinity.
+The exponent bit pattern `1111` is reserved for _Infinity_.
 
 # Small quantity and large quantity
 
 ## Going small
 
-The same design could be applied to 16 bit values, with 14 bits used to store numbers from 0 to 9,999 and an extension bit for larger values:
+The same design could be applied to 16 bit values, with 14 bits used to store numbers from _0_ to _9,999_ and an extension bit for larger values:
 
 ~~~
 sxkkkkuuuuuuuuuu
@@ -156,7 +156,7 @@ k
 u
   = units
 
-With that scheme, there are three decimal digits avalable to express the speed of light. The speed of light rounded up to three digits is 3×10⁸:
+With that scheme, there are three decimal digits available to express the speed of light. The speed of light rounded up to three digits is 3×10⁸:
 
 ~~~
 0101000100101100
@@ -176,7 +176,7 @@ Although the quantities are approximated it is still remarkable that 16 bit is e
 
 In a 64 bit value only **60** bits are usable to store decimal digits. In a 128 bit value only **124** bits are usable to store decimal digits.
 
-One bit is needed to store the sign, so in both cases there are three bits left for the extension:
+One bit is needed to store the sign, so in both cases there are _three_ bits left for the extension:
 
 ~~~
 sxxxppppppppppttttttttttggggggggggmmmmmmmmmmkkkkkkkkkkuuuuuuuuuu
@@ -214,15 +214,15 @@ Values in-between can be used as exponent themselves without requiring an extens
 
 ### Examples
 
-Let's use non-extended exponent values 0 to 5, so that integer quantities up to a quintillion can be written exactly:
+Let's use non-extended exponent values _0_ to _5_, so that integer quantities up to a quintillion can be written exactly:
 
-One (15 significant figures)
+One _(15 significant figures)_
 ~~~
 0000000000011010001100100000000000000000000000000000000000000000
                \__100___/
 ~~~
 
-One hundred quadrillion (18 significant figures)
+One hundred quadrillion _(18 significant figures)_
 ~~~
 0001000110010000000000000000000000000000000000000000000000000000
     \__100___/
@@ -234,7 +234,7 @@ Advogadro constant (6.02214076×10²³)
        \_60__/\__221___/\__407___/\__600___/
 ~~~
 
-Electron rest mass (9.1093837015×10⁻³¹ kg)
+Electron mass at rest (9.1093837015×10⁻³¹ kg)
 ~~~
 0000000000000000000010111110001110111010101001011100100010010110
                         \__910___/\__938___/\__370___/\__150___/
