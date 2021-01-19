@@ -170,7 +170,19 @@ There are two decimal digits available to express the Advogadro constant which r
          \_60__/
 ~~~
 
-Although the quantities are approximated it is still remarkable that 16 bit is enough to store them.
+Although the quantities are approximated it is still remarkable that **16** bit is enough to store them.
+
+One could even consider using just **8** bit for positive-only quantities where an exact value is not required after _one hundred_.
+A possible use would be frequency values in a large array.
+
+The largest number before _Infinity_ is 10²⁴.
+
+Speed of light 3×10⁸ as an eight bit value:
+
+~~~
+11100011
+    \3_/
+~~~
 
 ## Going large
 
