@@ -97,4 +97,4 @@ The final extension looks like:
 
 There is no space left to store decimal digits, so the quantity just corresponds to a unit of magnitude 10ⁿ where n goes up to 95.
 
-When all the exponent bits are `1` the quantity is Infinity.
+The exponent bit pattern `1111` is reserved for Infinity.
