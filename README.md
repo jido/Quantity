@@ -88,14 +88,14 @@ eeemmmmmmm
 ~~~
 
 e
-  = exponent (10ⁿ)
+  = exponent (10ⁿ) ranges from _2_ to _8_
 
 m
   = millions, ranges from _10_ to _99_
 
 Note that the first decimal digit cannot be zero because the _native equality and comparison_ property mandates it.
 
-The exponent ranges from _2_ to _8_ (`000` to `110`).
+The exponent bit patterns `000` to `110` correspond to values _2_ to _8_ for the initial extension.
 
 The exponent bit pattern `111` is reserved to further extend the quantity by dropping one more decimal digit.
 The next extension uses again a _three-bit exponent_ pattern:
