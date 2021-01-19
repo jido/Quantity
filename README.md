@@ -173,7 +173,7 @@ Although the quantities are approximated it is still remarkable that 16 bit is e
 
 With a 64 bit value only **60** bits are usable to store decimal digits. With a 128 bit value only **124** bits are usable to store decimal digits.
 
-One bit is needed to store the sign, so there are three bits left for the extension:
+One bit is needed to store the sign, so in both cases there are three bits left for the extension:
 
 ~~~
 sxxxppppppppppttttttttttggggggggggmmmmmmmmmmkkkkkkkkkkuuuuuuuuuu
@@ -207,4 +207,32 @@ One way to take advantage of these extra bits is to encode _negative_ exponents 
 
 If the extension bits are `000` then the exponents go _down_. If the extension bits are `111` then the exponents go _up_.
 
-Values in-between can be used as exponent themselves.
+Values in-between can be used as exponent themselves without requiring an extension of range.
+
+### Examples
+
+Let's use non-extended exponent values 0 to 5, so that integer quantities up to a quintillion can be written exactly:
+
+One (15 significant figures)
+~~~
+0000000000011010001100100000000000000000000000000000000000000000
+               \__100___/
+~~~
+
+Hundred quadrillions (18 significant figures)
+~~~
+0001000110010000000000000000000000000000000000000000000000000000
+    \__100___/
+~~~
+
+Advogadro constant (6.02214076×10²³)
+~~~
+0111000011110000110111010110010111100101100000000000000000000000
+       \_60__/\__221___/\__407___/\__600___/
+~~~
+
+Electron rest mass (9.1093837015×10⁻³¹ kg)
+~~~
+0000000000000000000010111110001110111010101001011100100010010110
+                        \__910___/\__938___/\__370___/\__150___/
+~~~
