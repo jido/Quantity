@@ -90,7 +90,9 @@ e
   = exponent (10ⁿ)
 
 m
-  = millions, ranges from 0 to 99
+  = millions, ranges from 10 to 99
+
+Note that the first decimal digit cannot be zero because the native equality and comparison property mandates it.
 
 The exponent ranges from 2 to 8 (`000` to `110`).
 
@@ -105,7 +107,7 @@ e
   = exponent (10ⁿ) ranges from 10 to 16
 
 m
-  = millions, ranges from 0 to 9
+  = millions, ranges from 1 to 9
 
 The exponent bit pattern `111` is reserved to further extend the quantity by dropping one more decimal digit.
 The next extension uses a four-bit exponent pattern:
