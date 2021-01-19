@@ -13,13 +13,13 @@ Number format to represent quantities for display and storage
 Uses 32 bits
 
 ~~~
-semmmmmmmmmmkkkkkkkkkkuuuuuuuuuu
+sxmmmmmmmmmmkkkkkkkkkkuuuuuuuuuu
 ~~~
 
 s
   = sign
 
-e
+x
   = extension
 
 m
@@ -55,7 +55,8 @@ Speed of light (299,792,458 m/s)
 
 A billion
 ~~~
-01000000000000000000000000000000
+        /10\
+01000000101000000000000000000000
  ^ extension bit
 ~~~
 
@@ -82,10 +83,10 @@ Each group of three digits is stored as a 10-bit integer. Binary representation:
 To extend the range of numbers, the head decimal digit is dropped. This frees up 3 bits which are used to store an exponent:
 
 ~~~
-xxxmmmmmmm
+eeemmmmmmm
 ~~~
 
-x
+e
   = exponent (10ⁿ)
 
 m
@@ -97,10 +98,10 @@ The exponent bit pattern `111` is reserved to further extend the quantity by dro
 The next extension uses again a three-bit exponent pattern:
 
 ~~~
-111xxxmmmm
+111eeemmmm
 ~~~
 
-x
+e
   = exponent (10ⁿ) ranges from 10 to 16
 
 m
@@ -110,10 +111,10 @@ The exponent bit pattern `111` is reserved to further extend the quantity by dro
 The next extension uses a four-bit exponent pattern:
 
 ~~~
-111111xxxx
+111111eeee
 ~~~
 
-x
+e
   = exponent (10ⁿ) ranges from 18 to 32
 
 At this point there are no bits left to store millions. The quantity only stores units and thousands.
@@ -123,9 +124,87 @@ The same sequence of 3, 3 and 4 bits for the exponent repeats for each group of 
 The final extension looks like:
 
 ~~~
-0111111111111111111111111111xxxx
+0111111111111111111111111111eeee
 ~~~
 
 There is no space left to store decimal digits, so the quantity just corresponds to a unit of magnitude 10ⁿ where n goes up to 95.
 
 The exponent bit pattern `1111` is reserved for Infinity.
+
+# Small quantity and large quantity
+
+## Going small
+
+The same design could be applied to 16 bit values, with 14 bits used to store numbers from 0 to 9,999 and an extension bit for larger values:
+
+~~~
+sxkkkkuuuuuuuuuu
+~~~
+
+s
+  = sign
+
+x
+  = extension
+
+k
+  = thousands
+
+u
+  = units
+
+With that scheme, there are three decimal digits avalable to express the speed of light. The speed of light rounded up to three digits is 3×10⁸:
+
+~~~
+0101000100101100
+      \__300___/
+~~~
+
+There are two decimal digits available to express the Advogadro constant which rounds down to 6×10²³:
+
+~~~
+0100001000111100
+         \_60__/
+~~~
+
+Although the quantities are approximated it is still remarkable that 16 bit is enough to store them.
+
+## Going large
+
+With a 64 bit value only **60** bits are usable to store decimal digits. With a 128 bit value only **124** bits are usable to store decimal digits.
+
+One bit is needed to store the sign, so there are three bits left for the extension:
+
+~~~
+sxxxppppppppppttttttttttggggggggggmmmmmmmmmmkkkkkkkkkkuuuuuuuuuu
+~~~
+
+s
+  = sign
+  
+x
+  = extension
+
+p
+  = quadrillions
+
+t
+  = trillions
+
+g
+  = billions
+
+m
+  = millions
+
+k
+  = thousands
+
+u
+  = units
+
+One way to take advantage of these extra bits is to encode _negative_ exponents which gives a fractional part to the quantity (floating point).
+
+If the extension bits are `000` then the exponents go _down_. If the extension bits are `111` then the exponents go _up_.
+
+Values in-between can be used as exponent themselves.
