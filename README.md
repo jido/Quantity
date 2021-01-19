@@ -2,7 +2,7 @@
 Number format to represent quantities for display and storage
 
 * Efficient conversion to and from text
-* Supports equality and comparison
+* Supports native equality and comparison
 * Also suitable for fixed point, rational numbers (using two quantities), floating point (with additional byte for exponent)
 * Numbers from 0 to 1,000,000,000 stored exactly
 * Larger numbers in reduced precision, including a value for Infinity
@@ -30,9 +30,36 @@ k
 u
   = units
 
-* Negative numbers stored using two's complement. `INT_MIN` is Not A Number
+* Negative numbers stored using two's complement
 * Decimal digits are stored in groups of 3 digits from 000 to 999
-* The extension bit allows to represent numbers larger than a billion as described below
+* The extension bit allows to represent numbers from a billion onwards as described below
+
+### Examples
+
+One
+~~~
+00000000000000000000000000000001
+~~~
+
+A thousand
+~~~
+00000000000000000000010000000000
+~~~
+
+Speed of light (299,792,458 m/s)
+~~~
+00010010101111000110000111001010
+~~~
+
+A billion
+~~~
+01000000000000000000000000000000
+~~~
+
+Advogadro constant (6.02214×10²³)
+~~~
+01111111000010010110100011010110
+~~~
 
 ### Extended quantity
 
