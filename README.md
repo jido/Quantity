@@ -2,8 +2,8 @@
 Number format to represent quantities for display and storage
 
 * Efficient conversion to and from text
-* Supports native equality and comparison
 * What you see is what you get: it's a decimal format so no internal rounding, no hidden digits
+* Supports native equality and comparison
 * Also suitable for fixed point, rational numbers (using two quantities), floating point (with additional byte for exponent)
 * Numbers from 0 to 1,000,000,000 stored exactly
 * Larger numbers in reduced precision, including a value for Infinity
