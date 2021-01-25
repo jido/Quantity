@@ -29,7 +29,6 @@ int log10int(long long integer) {
    int llong_bit = sizeof(long long) * 8;                // assume 8 bit per byte
    int log2 = llong_bit - __builtin_clzll(integer) - 1;  // log2(n) ~= 63 - (count of leading zeros)
    int log10 = (log2 * 3 / 10 + 1) * (integer > 0);      // log10 ~= log2 * 0.3 -- NOTE: clzll output undefined for 0, so suppress it
-   //printf("Log2=%d Log10=%d adjust? %c\n", log2, log10, '=' + (integer < powers10[log10]));
    return log10 - (integer < powers10[log10]);           // use a table to adjust value
 }
 
