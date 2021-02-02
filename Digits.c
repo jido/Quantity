@@ -89,24 +89,26 @@ long quantityFromInt(long long integer) {
 }
 
 long quantityFromString(char *string) {
-   long possibles[3];
-   long result = 0;
-   int rotation = 0;
-   int next_rot = 1;
+   long possibles[3] = {0};
+   long *result = possibles;  // initialised to 0
+   long *alt1 = possibles;
+   long *alt2 = possibles + 1;
+   long *alt3 = possibles + 2;
    char *next;
    
    for (next = string; *next >= '0' && *next <= '9'; ++next)
    {
       int digit = *next - '0';
-      result = possibles[rotation] + digit;
-      possibles[rotation] = result;
-      possibles[next_rot] += digit * 10;
-      rotation = next_rot;
-      next_rot = (rotation + 1) % 3;
-      possibles[next_rot] <<= 10;         // quantity filled up till the smallest unit, need to shift before adding more digits
-      possibles[next_rot] += digit * 100;
+      *alt1 += digit;
+      *alt2 += digit * 10;
+      *alt3 <<= 10;           // quantity filled up till the smallest unit, need to shift before adding more digits
+      *alt3 += digit * 100;
+      result = alt1;
+      alt1 = alt2;
+      alt2 = alt3;
+      alt3 = result;
    }
-   return result;
+   return *result;
 }
 
 int main(int n, char *args[]) {
