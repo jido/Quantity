@@ -88,16 +88,39 @@ long quantityFromInt(long long integer) {
    return result * sign;                  // set the sign
 }
 
-int main(int n, char *args[]) {
-   long A = 987;
+long quantityFromString(char *string) {
+   long possibles[3];
+   long result = 0;
+   int rotation = 0;
+   int next_rot = 1;
+   char *next;
+   
+   for (next = string; *next >= '0' && *next <= '9'; ++next)
+   {
+      int digit = *next - '0';
+      result = possibles[rotation] + digit;
+      possibles[rotation] = result;
+      possibles[next_rot] += digit * 10;
+      rotation = next_rot;
+      next_rot = (rotation + 1) % 3;
+      possibles[next_rot] <<= 10;         // quantity filled up till the smallest unit, need to shift before adding more digits
+      possibles[next_rot] += digit * 100;
+   }
+   return result;
+}
 
+int main(int n, char *args[]) {
+   long A, B;
+   char *val = "987";
    if (n > 1)
    {
-      char *val = args[1];
-       A = strtoll(val, NULL, 10);
+      val = args[1];
    }
+   
+   A = strtoll(val, NULL, 10);
    A = quantityFromInt(A);
-   printf("quantity: %ld\n", A);
+   B = quantityFromString(val);
+   printf("quantity: %ld or: %ld\n", A, B);
    char output[] = "Converted to string = _________E%d\n";
    char *line = strchr(output, '_');
    long expon = 0;
@@ -111,12 +134,14 @@ int main(int n, char *args[]) {
       int rem = xlog - 10 * group;
       int subgroup = rem * 3 / 10;                 // 0...3 -> subgroup 0, 4...6 -> subgroup 1, 7...9 -> subgroup 2
       int shift = group * 10 + 3 * subgroup + (subgroup > 0);  // 10*group + 0, 4, 7
-      int sexp = ((b >> shift) & (15 >> (subgroup > 0)))       // stored exponent bits
+      int sexp = ((b >> shift) & (15 >> (subgroup > 0)));      // stored exponent bits
       expon = base_exp[8 - 3 * group - subgroup] + sexp;
       b &= (1 << shift) - 1;
    }
-   putDigits((b >> 20) & 0x3FF, line);
-   putDigits((b >> 10) & 0x3FF, line + 3);
+   int group = (b >> 20) & 0x3FF;
+   if (group > 0) putDigits(group, line);
+   group = (b >> 10) & 0x3FF;
+   if (group > 0) putDigits(group, line + 3);
    putDigits(b & 0x3FF, line + 6);
    printf(output, expon);
 }
