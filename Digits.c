@@ -7,7 +7,7 @@
 int putDigits(int n, char *string) {
    int d0 = (n * 41) >> 12;     // hundreds using 4096 ~= 4100
    n = n - 100 * d0;            // remainder
-   int d1 = (n * 51 + 25) >> 9; // tens using 512 ~= 510 and rounding
+   int d1 = (n * 205) >> 11;    // tens using 2048 ~= 2050
    int d2 = n - 10 * d1;        // remainder
    string[0] = '0' + d0;
    string[1] = '0' + d1;
@@ -28,7 +28,7 @@ unsigned long long powers10[] = {
 int log10int(long long integer) {
    int llong_bit = sizeof(long long) * 8;                // assume 8 bit per byte
    int log2 = llong_bit - __builtin_clzll(integer) - 1;  // log2(n) ~= 63 - (count of leading zeros)
-   int log10 = (log2 * 3 / 10 + 1) * (integer > 0);      // log10 ~= log2 * 0.3 -- NOTE: clzll output undefined for 0, so suppress it
+   int log10 = (integer > 0) * (log2 * 3 / 10 + 1);      // log10 ~= log2 * 0.3 -- NOTE: clzll output undefined for 0, so suppress it
    return log10 - (integer < powers10[log10]);           // use a table to adjust value
 }
 
@@ -119,8 +119,7 @@ int main(int n, char *args[]) {
       val = args[1];
    }
    
-   A = strtoll(val, NULL, 10);
-   A = quantityFromInt(A);
+   A = quantityFromInt(strtoll(val, NULL, 10));
    B = quantityFromString(val);
    printf("quantity: %ld or: %ld\n", A, B);
    char output[] = "Converted to string = _________E%d\n";
