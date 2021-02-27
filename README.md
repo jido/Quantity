@@ -101,7 +101,7 @@ The exponent bit pattern `111` is reserved to further extend the quantity by dro
 The next extension uses again a _three-bit exponent_ pattern:
 
 ~~~
-111eeemmmm
+eeemmmm
 ~~~
 
 e
@@ -114,7 +114,7 @@ The exponent bit pattern `111` is reserved to further extend the quantity by dro
 The next extension uses a _four-bit exponent_ pattern:
 
 ~~~
-111111eeee
+eeee
 ~~~
 
 e
@@ -218,15 +218,15 @@ k
 u
   = units
 
-One way to take advantage of these extra bits is to encode _negative_ exponents which gives a fractional part to the quantity (floating point).
+The extension bits can be used as exponent themselves without requiring an extension of range.
+
+Moreover one way to take advantage of these extra bits is to encode _negative_ exponents which gives a fractional part to the quantity (floating point).
 
 If the extension bits are `000` then the exponents go _down_. If the extension bits are `111` then the exponents go _up_.
 
-Values in-between can be used as exponent themselves without requiring an extension of range.
-
 ### Examples
 
-Let's use non-extended exponent values _0_ to _5_, so that integer quantities up to a quintillion can be written exactly:
+Let's allow negative exponents and use non-extended exponent values _0_ to _5_, so that integer quantities up to a quintillion can be written exactly:
 
 One _(15 significant figures)_
 ~~~
