@@ -218,7 +218,7 @@ k
 u
   = units
 
-The extension bits can be used as exponent themselves without requiring an extension of range.
+The extension bits can be used as exponent themselves without having the necessity to drop decimal digits.
 
 Moreover one way to take advantage of these extra bits is to encode _negative_ exponents which gives a fractional part to the quantity (floating point).
 
