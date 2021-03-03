@@ -222,32 +222,32 @@ The extension bits can be used as exponent themselves without having the necessi
 
 Moreover one way to take advantage of these extra bits is to encode _negative_ exponents which gives a fractional part to the quantity (floating point).
 
-If the extension bits are `000` then the exponents go _down_. If the extension bits are `111` then the exponents go _up_.
+In this scheme when the extension bits are `000` then the exponents go _down_. When the extension bits are `111` then the exponents go _up_.
 
 ### Examples
 
-Let's allow negative exponents and use non-extended exponent values _0_ to _5_, so that integer quantities up to a quintillion can be written exactly:
+Let's allow negative exponent extension and use exponent values _-5_ to _0_ for the extension bits, so that integer quantities up to a quintillion can be written exactly:
 
-One _(15 significant figures)_
+One _(16 significant figures)_
 ~~~
-0000000000011010001100100000000000000000000000000000000000000000
-               \__100___/
+0000000011000100000000000000000000000000000000000000000000000000
+          \1_/
 ~~~
 
 One hundred quadrillion _(18 significant figures)_
 ~~~
-0001000110010000000000000000000000000000000000000000000000000000
+0110000110010000000000000000000000000000000000000000000000000000
     \__100___/
 ~~~
 
 Advogadro constant (6.02214076×10²³)
 ~~~
-0111000011110000110111010110010111100101100000000000000000000000
+0111101011110000110111010110010111100101100000000000000000000000
        \_60__/\__221___/\__407___/\__600___/
 ~~~
 
 Electron mass at rest (9.1093837015×10⁻³¹ kg)
 ~~~
-0000000000000000000010111110001110111010101001011100100010010110
-                        \__910___/\__938___/\__370___/\__150___/
+0000000000000000000110010001101101010111111110101111010111110100
+                    \9_/\__109___/\__383___/\__701___/\__500___/
 ~~~
