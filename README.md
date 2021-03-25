@@ -33,7 +33,7 @@ u
 * Numbers from _0_ to _999,999,999_
 * Infinity has all bits set except for sign
 * Negative quantities stored using two's complement
-* Sign bit only indicates an invalid quantity (NaN)
+* If only the sign bit is set it indicates an invalid quantity (NaN)
 * Decimal digits are stored in groups of three digits from **000** to **999**
 * The _extension_ bit allows to represent quantities from a billion onwards as described below
 
@@ -205,7 +205,7 @@ However, it is acceptable to use **little endian** format for local usage. The b
 
 ## Compression
 
-The format does not define any compression scheme.
+The format does not define a compression scheme.
 
 If the data contains patterns (repeated digits or sequence of digits), it is likely it will benefit from compression. This can be applied on top of the format as seen fit.
 
