@@ -19,7 +19,7 @@ s
   = sign
 
 x
-  = extension
+  = extension bit (0)
 
 m
   = millions
@@ -61,7 +61,7 @@ Positive infinity
 01111111111111111111111111111111
 ~~~
 
-## Large quantity
+## Large quantity (variable length)
 
 When the _extension bit_ is set a larger quantity is stored using as many bits as required.
 
@@ -77,7 +77,7 @@ s
   = sign
 
 x
-  = extension
+  = extension bits
 
 n
   = number of _chunks_ (44 bits)
@@ -177,7 +177,7 @@ p
   = picos
 
 n
-  = nanos (64 bit) or number of chunks (variable length)
+  = nanos _(64 bit)_ or number of chunks _(variable length)_
 
 **Example**
 
@@ -194,3 +194,27 @@ An implementation could allow only _fixed length_ quantities, which are **32 bit
 If _28 bits_ are always enough to store the number of chunks, the default extended format without exponent can be dropped altogether. Then quantities can have up to **6×10⁹ non-zero digits**.
 
 If there is no need for an _explicit fractional part_, the variable length floating point extension can be dropped. The 64 bit floating point extension can be made to behave like the exponent extension by using _exponent bias = +12_.
+
+# Practical considerations
+
+## Endianness
+
+Quantities should always be in **big endian** format for storage or exchange. This is because the textual representation of a quantity puts the most significant digit first.
+
+However, it is acceptable to use **little endian** format for local usage. The byte length of a quantity is always a multiple of _four_, so it is practical to handle the data as a sequence of _32 bit values_ (four bytes) using the platform natural endianness.
+
+## Compression
+
+The format does not define any compression scheme.
+
+If the data contains patterns (repeated digits or sequence of digits), it is likely it will benefit from compression. This can be applied on top of the format as seen fit.
+
+## Normalisation
+
+To make comparison more efficient quantities should be normalised, which generally means they should be written using as less bytes as possible.
+
+## Operations
+
+Quantities do not define any operation other than equality, comparison and conversion to and from other formats such as text.
+
+One reason is that combining quantities with very different magnitude can result in extreme memory consumption, for example _10¹⁰⁰⁰⁰⁰ + 1_ does not have a space-efficient representation.
