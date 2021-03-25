@@ -76,9 +76,9 @@ x
 n
   = number of _chunks_ (44 bits)
 
-A _chunk_ consists of eight groups of three digits for a total of **24 digits**. Each chunk occupies _80 bits = 10 bytes_.
+A _chunk_ consists of eight groups of three digits for a total of **24 digits**. Each chunk occupies _80 bits = 10 bytes_ in memory.
 
-The chunks follow immediately the header. The number of bytes occupied by the quantity is rounded up to the nearest multiple of four, which means that two bytes are wasted when _n_ is even.
+The chunks follow immediately the header. The number of bytes occupied by the quantity is rounded up to the nearest multiple of four, which means that two bytes padding are added when _n_ is even.
 
 ## Extensions
 
@@ -92,7 +92,7 @@ Other extension values put some of those bits to a different use:
 100 : default
 101 : with exponent
 110 : 64 bit floating point
-111 : floating point
+111 : variable length floating point
 ~~~
 
 ### Exponent extension
@@ -131,7 +131,7 @@ Advogadro constant (6.02214076×10²³)
 
 ### Floating point extension
 
-The above exponent extension could be used to write floating point quantities by deciding a fixed position for the decimal point and adjust the exponent by that much (_exponent bias_). 
+The above exponent extension could be used to write floating point quantities by deciding a maximum number of figures after the decimal point and adjust the exponent by that much (_exponent bias_). 
 
 However, that is not an efficient method if the quantities have a wide range of magnitude.
 
@@ -143,7 +143,7 @@ Bit layout:
 
 ~~~
 64 bit:
-sxxxeeeeeeeeeeeeeeeeddddmmmmmmmmmmµµµµµµµµµµppppppppppnnnnnnnnnn
+sxxxeeeeeeeeeeeeeeeeddddmmmmmmmmmmµµµµµµµµµµnnnnnnnnnnpppppppppp
 
 Variable length:
 sxxxeeeeeeeeeeeeeeeeddddnnnnnnnnnnnnnnnnnnnnnnnn ...
@@ -171,7 +171,7 @@ p
   = picos
 
 n
-  = nanos (64 bit) or number of chunks
+  = nanos (64 bit) or number of chunks (variable length)
 
 **Example:**
 
