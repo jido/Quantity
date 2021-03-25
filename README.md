@@ -9,7 +9,7 @@ Number format to represent quantities for display and storage
 
 ## Small quantity (32 bit)
 
-Bit layout:
+**Bit layout**
 
 ~~~
 sxmmmmmmmmmmkkkkkkkkkkuuuuuuuuuu
@@ -61,7 +61,7 @@ When the _extension bit_ is set a larger quantity is stored using as many bits a
 
 As previously, each group of three digits is stored as a 10-bit integer up to **999** (_in binary:_ 1111100111)
 
-The extended format starts with a header:
+The extended format starts with a **header**:
 
 ~~~
 sxxxnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
@@ -101,7 +101,7 @@ The format recognises a special case where all the end digits of the quantity ar
 
 Instead of using more chunks to write these zeros, the first 16 bits of _n_ are used to store an _exponent_ which indicates the number of trailing zeros.
 
-Header bit layout:
+**Header bit layout**
 
 ~~~
 sxxxeeeeeeeeeeeeeeeennnnnnnnnnnnnnnnnnnnnnnnnnnn
@@ -139,14 +139,14 @@ Instead it is preferable to fix the position of the decimal point _after the fir
 
 In the floating point extension, the exponent is immediately followed by the first digit of the quantity.
 
-Bit layout:
+**Bit layout**
 
 ~~~
 64 bit:
 sxxxeeeeeeeeeeeeeeeeddddmmmmmmmmmmµµµµµµµµµµnnnnnnnnnnpppppppppp
 
-Variable length:
-sxxxeeeeeeeeeeeeeeeeddddnnnnnnnnnnnnnnnnnnnnnnnn ...
+Variable length header:
+sxxxeeeeeeeeeeeeeeeeddddnnnnnnnnnnnnnnnnnnnnnnnn
 ~~~
 
 s
