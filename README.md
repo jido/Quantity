@@ -143,10 +143,10 @@ Bit layout:
 
 ~~~
 64 bit:
-sxxxeeeeeeeeeeeeeeeeddddggggggggggmmmmmmmmmmkkkkkkkkkkuuuuuuuuuu
+sxxxeeeeeeeeeeeeeeeeddddmmmmmmmmmmµµµµµµµµµµppppppppppnnnnnnnnnn
 
 Variable length:
-sxxxeeeeeeeeeeeeeeeeddddnnnnnnnnnnnnnnnnnnnnnnnn...
+sxxxeeeeeeeeeeeeeeeeddddnnnnnnnnnnnnnnnnnnnnnnnn ...
 ~~~
 
 s
@@ -161,20 +161,17 @@ e
 d
   = first digit (1 to 9)
 
-n
-  = number of chunks
-
-g
-  = billions
-
 m
-  = millions
+  = millis
 
-k
-  = thousands
+µ
+  = micros
 
-u
-  = units
+p
+  = picos
+
+n
+  = nanos (64 bit) or number of chunks
 
 **Example:**
 
