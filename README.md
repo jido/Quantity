@@ -3,14 +3,13 @@ Number format to represent quantities for display and storage
 
 * Efficient conversion to and from text
 * What you see is what you get: it's a decimal format which means _no internal rounding, no hidden digits_
-* Supports native equality and comparison
-* Also suitable for fixed point, rational numbers (using two quantities), floating point (with additional byte for exponent)
-* Numbers from _0_ to _1,000,000,000_ stored exactly
-* Larger numbers in reduced precision, including a value for _Infinity_
+* Arbitrary precision
+* Supports native equality and comparison of like numbers
+* Includes value for _Infinity_
 
-## Format
+## Small quantity (32 bit)
 
-Uses 32 bits
+Bit layout:
 
 ~~~
 sxmmmmmmmmmmkkkkkkkkkkuuuuuuuuuu
@@ -31,6 +30,7 @@ k
 u
   = units
 
+* Numbers from _0_ to _999,999,999_
 * Negative numbers stored using two's complement
 * Decimal digits are stored in groups of three digits from **000** to **999**
 * The _extension_ bit allows to represent numbers from a billion onwards as described below
@@ -54,94 +54,17 @@ Speed of light (299,792,458 m/s)
   \__299___/\__792___/\__458___/
 ~~~
 
-One billion
-~~~
-     /¯10¯¯\
-01000000101000000000000000000000
- ^ extension bit
-~~~
 
-Advogadro constant (6.02214×10²³)
-~~~
-01111111000010010110100011010110
-            \__602___/\__214___/
-~~~
+## Large quantity
 
-### Extended quantity
+When the extension bit is set a larger quantity is stored using as many bits as required.
 
-When the extension bit is set, a larger quantity is stored in reduced precision.
+As previously, each group of three digits is stored as a 10-bit integer up to **999** (_in binary:_ 1111100111)
 
-To explain how this works one should look at how decimal digits are stored.
-
-Each group of three digits is stored as a 10-bit integer. Binary representation:
+The extended format starts with a header:
 
 ~~~
-    0-9 : 0000000000 - 0000001001
-  10-99 : 0000001010 - 0001100011
-100-999 : 0001100100 - 1111100111
-~~~
-
-To extend the range of numbers, the head decimal digit is dropped. This frees up three bits which are used to store an exponent:
-
-~~~
-eeemmmmmmm
-~~~
-
-e
-  = exponent (10ⁿ) ranges from _2_ to _8_
-
-m
-  = millions, ranges from _10_ to _99_
-
-Note that the first decimal digit cannot be zero because the _native equality and comparison_ property mandates it.
-
-The exponent bit patterns `000` to `110` correspond to values _2_ to _8_ for the initial extension.
-
-The exponent bit pattern `111` is reserved to further extend the quantity by dropping one more decimal digit.
-The next extension uses again a _three-bit exponent_ pattern:
-
-~~~
-eeemmmm
-~~~
-
-e
-  = exponent (10ⁿ) ranges from _10_ to _16_
-
-m
-  = millions, ranges from _1_ to _9_
-
-The exponent bit pattern `111` is reserved to further extend the quantity by dropping one more decimal digit.
-The next extension uses a _four-bit exponent_ pattern:
-
-~~~
-eeee
-~~~
-
-e
-  = exponent (10ⁿ) ranges from _18_ to _32_
-
-At this point there are no bits left to store millions. The quantity only stores thousands and units.
-
-The same sequence of _3, 3 and 4_ bits for the exponent repeats for each group of three decimal digits (thousands and units).
-
-The final extension looks like:
-
-~~~
-0111111111111111111111111111eeee
-~~~
-
-There is no space left to store decimal digits, so the quantity just corresponds to a unit of magnitude 10ⁿ where _n_ goes up to 95.
-
-The exponent bit pattern `1111` is reserved for _Infinity_.
-
-# Small quantity and large quantity
-
-## Going small
-
-The same design could be applied to 16 bit values, with 14 bits used to store numbers from _0_ to _9,999_ and an extension bit for larger values:
-
-~~~
-sxkkkkuuuuuuuuuu
+sxxxnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn
 ~~~
 
 s
@@ -150,61 +73,78 @@ s
 x
   = extension
 
-k
-  = thousands
+n
+  = number of _chunks_
 
-u
-  = units
+A _chunk_ consists of eight groups of three digits for a total of **24 digits**. Each chunk occupies _80 bits = 10 bytes_.
 
-With that scheme, there are three decimal digits available to express the speed of light. The speed of light rounded up to three digits is 3×10⁸:
+The chunks follow immediately the header. The number of bytes occupied by the quantity is rounded up to the nearest multiple of four, which means that two bytes are wasted when _n_ is even.
 
-~~~
-0101000100101100
-      \__300___/
-~~~
+## Extensions
 
-There are two decimal digits available to express the Advogadro constant which rounds down to 6×10²³:
+The default extension value is **100** (binary).
 
-~~~
-0100001000111100
-         \_60__/
-~~~
+The number of chunks is encoded using 44 bits which corresponds to a quantity with up to 4×10¹⁴ digits.
 
-Although the quantities are approximated it is still remarkable that **16** bit is enough to store them.
-
-One could even consider using just **8** bit for positive-only quantities where an exact value is not required after _one hundred_.
-A possible use would be frequency values in a large array.
-
-The largest number before _Infinity_ is 10²⁴.
-
-Speed of light 3×10⁸ as an eight bit value:
+Other extension values put some of those bits to a different use:
 
 ~~~
-11100011
-    \3_/
+100 : default
+101 : with exponent
+110 : 64 bit floating point
+111 : floating point
 ~~~
 
-## Going large
+### Exponent extension
 
-In a 64 bit value only **60** bits are usable to store decimal digits. In a 128 bit value only **124** bits are usable to store decimal digits.
+The format recognises a special case where all the end digits of the quantity are _zeros_.
 
-One bit is needed to store the sign, so in both cases there are _three_ bits left for the extension:
+Instead of using more chunks to write these zeros, the first 16 bits of _n_ are used to store an _exponent_ which indicates the number of trailing zeros.
+
+**Example:**
+
+Advogadro constant (6.02214076×10²³)
+~~~
+010100000000000010000000000000000000000000000001
+    \__exponent____/\_____number of chunks_____/
+10010110100011010110000100110000000000000000000000000000000000000000000000000000
+\__602___/\__214___/\__076___/
+~~~
+
+### Floating point extension
+
+The exponent extension could be used to write floating point quantities by deciding a fixed position for the decimal point and adjust the exponent by that much (_exponent bias_). 
+
+However, that is not an efficient method if the quantities have a wide range of magnitude.
+
+Instead it is preferable to fix the position of the decimal point _after the first digit_ and use chunks for the fractional part only.
+
+In the floating point extension, the exponent is immediately followed by the first digit of the quantity.
+
+Bit layout:
 
 ~~~
-sxxxppppppppppttttttttttggggggggggmmmmmmmmmmkkkkkkkkkkuuuuuuuuuu
+64 bit:
+sxxxeeeeeeeeeeeeeeeeddddggggggggggmmmmmmmmmmkkkkkkkkkkuuuuuuuuuu
+
+Variable length:
+sxxxeeeeeeeeeeeeeeeeddddnnnnnnnnnnnnnnnnnnnnnnnn
 ~~~
 
 s
   = sign
-  
+
 x
-  = extension
+  = extension (110 or 111)
 
-p
-  = quadrillions
+e
+  = exponent
 
-t
-  = trillions
+d
+  = first digit
+
+n
+  = number of chunks
 
 g
   = billions
@@ -218,36 +158,8 @@ k
 u
   = units
 
-The extension bits can be used as exponent themselves without having the necessity to drop decimal digits.
-
-Moreover one way to take advantage of these extra bits is to encode _negative_ exponents which gives a fractional part to the quantity (floating point).
-
-In this scheme when the extension bits are `000` then the exponents go _down_. When the extension bits are `111` then the exponents go _up_.
-
-### Examples
-
-Let's allow negative exponent extension and use exponent values _-5_ to _0_ for the extension bits, so that integer quantities up to a quintillion can be written exactly:
-
-One _(16 significant figures)_
-~~~
-0000000011000100000000000000000000000000000000000000000000000000
-          \1_/
-~~~
-
-One hundred quadrillion _(18 significant figures)_
-~~~
-0110000110010000000000000000000000000000000000000000000000000000
-    \__100___/
-~~~
-
-Advogadro constant (6.02214076×10²³)
-~~~
-0111101011110000110111010110010111100101100000000000000000000000
-       \_60__/\__221___/\__407___/\__600___/
-~~~
+**Example:**
 
 Electron mass at rest (9.1093837015×10⁻³¹ kg)
 ~~~
-0000000000000000000110010001101101010111111110101111010111110100
-                    \9_/\__109___/\__383___/\__701___/\__500___/
 ~~~
