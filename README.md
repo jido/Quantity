@@ -5,7 +5,6 @@ Number format to represent quantities for display and storage
 * What you see is what you get: it's a decimal format which means _no internal rounding, no hidden digits_
 * Arbitrary precision
 * Supports native equality and comparison of like numbers
-* Includes value for _Infinity_
 
 ## Small quantity (32 bit)
 
@@ -193,27 +192,27 @@ An implementation could allow only _fixed length_ quantities, which are **32 bit
 
 If _28 bits_ are always enough to store the number of chunks, the default extended format without exponent can be dropped altogether. Then quantities can have up to **6×10⁹ non-zero digits**.
 
-If there is no need for an _explicit fractional part_, the variable length floating point extension can be dropped. The 64 bit floating point extension can be made to behave like the exponent extension by using _exponent bias = +12_.
+If there is no need for an _explicit fractional part_, the variable length floating point extension can be dropped. The 64 bit floating point extension can be made to behave like the exponent extension by using _exponent bias +12_.
 
-# Practical considerations
+## Practical considerations
 
-## Endianness
+### Endianness
 
 Quantities should always be in **big endian** format for storage or exchange. This is because the textual representation of a quantity puts the most significant digit first.
 
 However, it is acceptable to use **little endian** format for local usage. The byte length of a quantity is always a multiple of _four_, so it is practical to handle the data as a sequence of _32 bit values_ (four bytes) using the platform natural endianness.
 
-## Compression
+### Compression
 
 The format does not define a compression scheme.
 
 If the data contains patterns (repeated digits or sequence of digits), it is likely it will benefit from compression. This can be applied on top of the format as seen fit.
 
-## Normalisation
+### Normalisation
 
 To make comparison more efficient quantities should be normalised, which generally means they should be written using as less bytes as possible.
 
-## Operations
+### Operations
 
 Quantities do not define any operation other than equality, comparison and conversion to and from other formats such as text.
 
