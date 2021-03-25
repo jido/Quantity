@@ -31,9 +31,11 @@ u
   = units
 
 * Numbers from _0_ to _999,999,999_
-* Negative numbers stored using two's complement
+* Infinity has all bits set except for sign
+* Negative quantities stored using two's complement
+* Sign bit only indicates an invalid quantity (NaN)
 * Decimal digits are stored in groups of three digits from **000** to **999**
-* The _extension_ bit allows to represent numbers from a billion onwards as described below
+* The _extension_ bit allows to represent quantities from a billion onwards as described below
 
 ### Examples
 
@@ -54,6 +56,10 @@ Speed of light (299,792,458 m/s)
   \__299___/\__792___/\__458___/
 ~~~
 
+Positive infinity
+~~~
+01111111111111111111111111111111
+~~~
 
 ## Large quantity
 
@@ -178,3 +184,11 @@ n
 Electron mass at rest (9.1093837015×10⁻³¹ kg)
 ~~~
 ~~~
+
+### Variations
+
+An implementation could allow only _fixed length_ quantities, which are **32 bit small quantity** and **64 bit floating point quantity**. In case of a 32 bit quantity a second value could be added to write a _fraction_ (x/y).
+
+If _28 bits_ are always enough to store the number of chunks, the default extended format without exponent can be dropped altogether. Then quantities can have up to **6×10⁹ non-zero digits**.
+
+If there is no need for an _explicit_ fractional part, the variable length floating point extension can be dropped. The 64 bit floating point extension can be made to behave like the exponent extension by using _exponent bias = +12_.
