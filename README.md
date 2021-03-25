@@ -57,14 +57,14 @@ Speed of light (299,792,458 m/s)
 
 ## Large quantity
 
-When the extension bit is set a larger quantity is stored using as many bits as required.
+When the _extension bit_ is set a larger quantity is stored using as many bits as required.
 
 As previously, each group of three digits is stored as a 10-bit integer up to **999** (_in binary:_ 1111100111)
 
 The extended format starts with a header:
 
 ~~~
-sxxxnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn nnnnnnnn
+sxxxnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
 ~~~
 
 s
@@ -74,7 +74,7 @@ x
   = extension
 
 n
-  = number of _chunks_
+  = number of _chunks_ (44 bits)
 
 A _chunk_ consists of eight groups of three digits for a total of **24 digits**. Each chunk occupies _80 bits = 10 bytes_.
 
@@ -84,7 +84,7 @@ The chunks follow immediately the header. The number of bytes occupied by the qu
 
 The default extension value is **100** (binary).
 
-The number of chunks is encoded using 44 bits which corresponds to a quantity with up to 4×10¹⁴ digits.
+The number of chunks is encoded using _44 bits_ which corresponds to a quantity with up to **4×10¹⁴ digits**.
 
 Other extension values put some of those bits to a different use:
 
@@ -101,6 +101,24 @@ The format recognises a special case where all the end digits of the quantity ar
 
 Instead of using more chunks to write these zeros, the first 16 bits of _n_ are used to store an _exponent_ which indicates the number of trailing zeros.
 
+Header bit layout:
+
+~~~
+sxxxeeeeeeeeeeeeeeeennnnnnnnnnnnnnnnnnnnnnnnnnnn
+~~~
+
+s
+  = sign
+
+x
+  = extension
+
+e
+  = exponent
+
+n
+  = number of _chunks_
+
 **Example:**
 
 Advogadro constant (6.02214076×10²³)
@@ -113,7 +131,7 @@ Advogadro constant (6.02214076×10²³)
 
 ### Floating point extension
 
-The exponent extension could be used to write floating point quantities by deciding a fixed position for the decimal point and adjust the exponent by that much (_exponent bias_). 
+The above exponent extension could be used to write floating point quantities by deciding a fixed position for the decimal point and adjust the exponent by that much (_exponent bias_). 
 
 However, that is not an efficient method if the quantities have a wide range of magnitude.
 
@@ -128,7 +146,7 @@ Bit layout:
 sxxxeeeeeeeeeeeeeeeeddddggggggggggmmmmmmmmmmkkkkkkkkkkuuuuuuuuuu
 
 Variable length:
-sxxxeeeeeeeeeeeeeeeeddddnnnnnnnnnnnnnnnnnnnnnnnn
+sxxxeeeeeeeeeeeeeeeeddddnnnnnnnnnnnnnnnnnnnnnnnn...
 ~~~
 
 s
@@ -141,7 +159,7 @@ e
   = exponent
 
 d
-  = first digit
+  = first digit (1 to 9)
 
 n
   = number of chunks
