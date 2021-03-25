@@ -125,7 +125,7 @@ e
 n
   = number of _chunks_
 
-**Example:**
+**Example**
 
 Advogadro constant (6.02214076×10²³)
 ~~~
@@ -179,16 +179,18 @@ p
 n
   = nanos (64 bit) or number of chunks (variable length)
 
-**Example:**
+**Example**
 
 Electron mass at rest (9.1093837015×10⁻³¹ kg)
 ~~~
+0110011111111110000110010001101101010111111110101111010111110100
+    \___exponent___/\9_/\__109___/\__383___/\__701___/\__500___/
 ~~~
 
 ### Variations
 
-An implementation could allow only _fixed length_ quantities, which are **32 bit small quantity** and **64 bit floating point quantity**. In case of a 32 bit quantity a second value could be added to write a _fraction_ (x/y).
+An implementation could allow only _fixed length_ quantities, which are **32 bit small quantity** and **64 bit floating point quantity**. In case of a 32 bit quantity a second value could be added to write a _fraction (x/y)_.
 
 If _28 bits_ are always enough to store the number of chunks, the default extended format without exponent can be dropped altogether. Then quantities can have up to **6×10⁹ non-zero digits**.
 
-If there is no need for an _explicit_ fractional part, the variable length floating point extension can be dropped. The 64 bit floating point extension can be made to behave like the exponent extension by using _exponent bias = +12_.
+If there is no need for an _explicit fractional part_, the variable length floating point extension can be dropped. The 64 bit floating point extension can be made to behave like the exponent extension by using _exponent bias = +12_.
