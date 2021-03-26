@@ -41,6 +41,7 @@ u
 One
 ~~~
 00000000000000000000000000000001
+                      \___1____/
 ~~~
 
 One thousand
@@ -66,7 +67,7 @@ When the _extension bit_ is set a larger quantity is stored using as many bits a
 
 As previously, each group of three digits is stored as a 10-bit integer up to **999** (_in binary:_ 1111100111)
 
-The extended format starts with a **header**:
+The extended format starts with a 48-bit **header**:
 
 ~~~
 sxxxnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn
@@ -76,7 +77,7 @@ s
   = sign
 
 x
-  = extension bits
+  = extension bits (100)
 
 n
   = number of _chunks_ (44 bits)
@@ -109,7 +110,7 @@ Instead of using more chunks to write these zeros, the first 16 bits of _n_ are 
 **Header bit layout**
 
 ~~~
-sxxxeeeeeeeeeeeeeeeennnnnnnnnnnnnnnnnnnnnnnnnnnn
+sxxxeeeeeeeeeeeeeeee nnnnnnnnnnnnnnnnnnnnnnnnnnnn
 ~~~
 
 s
@@ -128,15 +129,15 @@ n
 
 Advogadro constant (6.02214076×10²³)
 ~~~
-010100000000000010000000000000000000000000000001
-    \__exponent____/\_____number of chunks_____/
+01010000000000001000 0000000000000000000000000001
+    \__exponent____/ \_____number of chunks_____/
 10010110100011010110000100110000000000000000000000000000000000000000000000000000
 \__602___/\__214___/\__076___/
 ~~~
 
 ### Floating point extension
 
-The above exponent extension could be used to write floating point quantities by deciding a maximum number of figures after the decimal point and adjust the exponent by that much (_exponent bias_). 
+The above _exponent extension_ could also be used to write floating point quantities by deciding a maximum number of figures after the decimal point and adjust the exponent by the same amount (_exponent bias_). 
 
 However, that is not an efficient method if the quantities have a wide range of magnitude.
 
@@ -148,10 +149,10 @@ In the floating point extension, the exponent is immediately followed by the fir
 
 ~~~
 64 bit:
-sxxxeeeeeeeeeeeeeeeeddddmmmmmmmmmmµµµµµµµµµµnnnnnnnnnnpppppppppp
+sxxxeeeeeeeeeeeeeeeedddd mmmmmmmmmmµµµµµµµµµµnnnnnnnnnnpppppppppp
 
 Variable length header:
-sxxxeeeeeeeeeeeeeeeeddddnnnnnnnnnnnnnnnnnnnnnnnn
+sxxxeeeeeeeeeeeeeeeedddd nnnnnnnnnnnnnnnnnnnnnnnn
 ~~~
 
 s
@@ -182,8 +183,8 @@ n
 
 Electron mass at rest (9.1093837015×10⁻³¹ kg)
 ~~~
-0110011111111110000110010001101101010111111110101111010111110100
-    \___exponent___/\9_/\__109___/\__383___/\__701___/\__500___/
+011001111111111000011001 0001101101010111111110101111010111110100
+    \___exponent___/\9_/ \__109___/\__383___/\__701___/\__500___/
 ~~~
 
 ### Variations
