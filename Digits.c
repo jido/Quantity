@@ -32,31 +32,6 @@ int log10int(long long integer) {
    return log10 - (integer < powers10[log10]);           // use a table to adjust value
 }
 
-inline int extended_exp(int n) {
-   //printf("log10 = %d\n", n+1);
-   int factor29 = (n * 141) >> 10;     // use 4096 ~= 141*29 and some truncation magic for
-   // series 2...8,  10...16, 18...32, 34...40, 42...48, 50...64, 66...72, 74...80, 82...96
-   return (n > 7) * (n - 7 + factor29 - (factor29 >> 2));
-}
-
-inline int exp_offset(int n) {
-   int factor29 = (n * 141) >> 10;     // use 4096 ~= 141*29 and extended_exp() for
-   // series 0...6,  0...6, 0...14, 0...6, 0...6, 0...14, 0...6, 0...6, 0...14
-   return (n > 7) * (8 * (factor29 - ((factor29 & 3) == 0)) - 6);
-}
-
-inline int exp_position(int n) {
-   int factor29 = (n * 141) >> 10;     // use 4096 ~= 141*29 and some truncation magic for
-   // series 27, ..., 27, 24, ..., 24, 20, ..., 17, ..., 14, ..., 10, ..., 7, ..., 4, ..., 0, ...
-   return 30 - 10 * (factor29 - (factor29 >> 2)) / 3;
-}
-
-inline int exp_size(int n) {
-   int factor29 = (n * 141) >> 10;     // use 4096 ~= 141*29 and some truncation magic for
-   // series 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 3, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 4, 3, 3, ...
-   return 4 - (((factor29 + 1) >> 1) & 1);
-}
-
 long groupDigits(long integer) {
    long div = integer / 1000;
    long groups = integer - div * 1000;
@@ -73,18 +48,8 @@ long quantityFromInt(long long integer) {
    // Note: calculations are designed to be close to constant time
    int sign = (integer >= 0) - (integer < 0);
    integer *= sign;                       // make it a positive value
-   int elog = log10int(integer) - 1;
-   int eexp = extended_exp(elog);
-   int offs = eexp - exp_offset(elog);
-   int epos = exp_position(elog);
-   int hipos = epos + exp_size(elog);
-   printf("Exponent offset: %d position: %d then: %d\n", offs, epos, hipos);
-   unsigned long long pext = powers10[eexp];
    long result = 0;
-   result |= (eexp > 0) * (0x7FFFFFFF ^ ((1 << hipos) - 1));   // fill in extension bits
-   printf("filling in: %lx\n", result);
-   result |= offs << epos;                // insert exponent offset
-   result |= groupDigits(integer / pext); // round integer *down* (truncation) and add to result
+   result = groupDigits(integer);         // round integer *down* (truncation) and add to result
    return result * sign;                  // set the sign
 }
 
@@ -126,19 +91,6 @@ int main(int n, char *args[]) {
    char *line = strchr(output, '_');
    long expon = 0;
    long b = labs(A) & 0x3FFFFFFF;
-   if (b != labs(A))
-   {
-      int base_exp[] = {2, 10, 18, 32, 40, 48, 62, 80, 88, 96};
-      int llong_bit = sizeof(long long) * 8;       // assume 8 bit per byte
-      int xlog = llong_bit - __builtin_clzll(0x3FFFFFFF - b) - 1;
-      int group = xlog / 10;
-      int rem = xlog - 10 * group;
-      int subgroup = rem * 3 / 10;                 // 0...3 -> subgroup 0, 4...6 -> subgroup 1, 7...9 -> subgroup 2
-      int shift = group * 10 + 3 * subgroup + (subgroup > 0);  // 10*group + 0, 4, 7
-      int sexp = ((b >> shift) & (15 >> (subgroup > 0)));      // stored exponent bits
-      expon = base_exp[8 - 3 * group - subgroup] + sexp;
-      b &= (1 << shift) - 1;
-   }
    int group = (b >> 20) & 0x3FF;
    if (group > 0) putDigits(group, line);
    group = (b >> 10) & 0x3FF;
