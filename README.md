@@ -234,6 +234,21 @@ _Floating point_ | 111 | 0 | 48 bit | single significant figure
 _64 bit floating point_ | 110 | - | 64 bit | up to 13 significant figures
 _Floating point_ | 111 | any | 128 bit+ | other values
 
+### Infinitesimal quantity
+
+Although the first digit of a floating point value would normally be between one and nine, nothing prevents from making it zero instead.
+
+For example, when converting from text to a quantity, floating point values may be detected by looking at a finite number of characters. When a decimal point appears after the detection point the quantity may already be written as a sequence of chunks without a first digit. It can be easily converted to a (non normalised) floating point value with _first digit = 0_.
+
+This introduction hints at how to write an infinitesimal quantity. A floating point value which first digit is zero and with zero chunks denotes a quantity which is equivalent to zero, such as _1/x when x ⟶ ∞_. It can be positive or negative. 
+
+**Example**
+
++ε
+~~~
+011100000000000000000000 000000000000000000000000
+~~~
+
 ### Operations
 
 Quantities do not define any operation other than equality, comparison and conversion to and from other formats such as text.
