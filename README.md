@@ -65,8 +65,6 @@ Positive infinity
 
 When the _extension bit_ is set a larger quantity is stored using as many bits as required.
 
-As previously, each group of three digits is stored as a 10-bit integer up to **999** (_in binary:_ 1111100111)
-
 The extended format starts with a 48-bit **header**:
 
 ~~~
@@ -85,6 +83,13 @@ n
 A _chunk_ consists of eight groups of three digits for a total of **24 digits**. Each chunk occupies _80 bits = 10 bytes_ in memory.
 
 The chunks follow immediately the header. The number of bytes occupied by the quantity is rounded up to the nearest multiple of four, which means that two bytes padding are added when _n_ is even.
+
+As previously, each group of three digits is stored as a 10-bit integer up to **999** (_in binary:_ 1111100111).
+
+A special value of **1023** means that the group is not in use (_in binary:_ 1111111111). That is useful when the number of groups is not known in advance.
+A special value of **1022** or **1021** mean that one digit and two digits respectively are not in use in the preceding group (_in binary:_ 1111111110 and 1111111101). The unused digits should be all **0**.
+
+The padding is normally filled with ones. The first 10 bits of the padding can be used for special values _1022_ or _1021_ when the last one or two digits of the chunk should be discarded.
 
 ## Extensions
 
