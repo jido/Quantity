@@ -213,6 +213,27 @@ If the data contains patterns (repeated digits or sequence of digits), it is lik
 
 To make comparison more efficient quantities should be normalised, which generally means they should be written using as less bytes as possible.
 
+The options below should be evaluated in order and the first fit be taken.
+
+**Integer quantity**
+
+Option | Extension bits | Number of chunks | Length | Application
+---|---|---|---|---
+Small quantity | 0 | - | 32 bit | value up to 999,999,999 and special values
+Exponent extension | 101 | 0 | 48 bit | powers of 10
+64 bit floating point | 110 | - | 64 bit | up to 13 significant figures
+Exponent extension | 101 | any | 128 bit+ | values ending with zeros
+Default extension | 100 | any | 128 bit+ | other values
+
+**Fractional quantity**
+
+Option | Extension bits | Number of chunks | Length | Application
+---|---|---|---|---
+Small quantity | 0 | - | 32 bit | round value up to 999,999,999 and special values
+Floating point extension | 111 | 0 | 48 bit | single significant figure
+64 bit floating point | 110 | - | 64 bit | up to 13 significant figures
+Floating point extension | 111 | any | 128 bit+ | other values
+
 ### Operations
 
 Quantities do not define any operation other than equality, comparison and conversion to and from other formats such as text.
