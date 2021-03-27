@@ -215,24 +215,24 @@ To make comparison more efficient quantities should be normalised, which general
 
 The options below should be evaluated in order and the first fit be taken.
 
-**Integer quantity**
+**_Integer quantity_**
 
 Option | Extension bits | Number of chunks | Length | Application
 ---|---|---|---|---
-Small quantity | 0 | - | 32 bit | value up to 999,999,999 and special values
-Exponent extension | 101 | 0 | 48 bit | powers of 10
-64 bit floating point | 110 | - | 64 bit | up to 13 significant figures
-Exponent extension | 101 | any | 128 bit+ | values ending with zeros
-Default extension | 100 | any | 128 bit+ | other values
+_Small quantity_ | 0 | - | 32 bit | value up to 999,999,999 and special values
+_With exponent_ | 101 | 0 | 48 bit | powers of 10
+_64 bit floating point_ | 110 | - | 64 bit | up to 13 significant figures
+_With exponent_ | 101 | any | 128 bit+ | values ending with zeros
+_Default extension_ | 100 | any | 128 bit+ | other values
 
-**Fractional quantity**
+**_Fractional quantity_**
 
 Option | Extension bits | Number of chunks | Length | Application
 ---|---|---|---|---
-Small quantity | 0 | - | 32 bit | round value up to 999,999,999 and special values
-Floating point extension | 111 | 0 | 48 bit | single significant figure
-64 bit floating point | 110 | - | 64 bit | up to 13 significant figures
-Floating point extension | 111 | any | 128 bit+ | other values
+_Small quantity_ | 0 | - | 32 bit | round value up to 999,999,999 and special values
+_Floating point_ | 111 | 0 | 48 bit | single significant figure
+_64 bit floating point_ | 110 | - | 64 bit | up to 13 significant figures
+_Floating point_ | 111 | any | 128 bit+ | other values
 
 ### Operations
 
