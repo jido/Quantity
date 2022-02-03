@@ -126,10 +126,10 @@ x
   = extension
 
 e
-  = exponent
+  = exponent (16 bits)
 
 n
-  = number of _chunks_
+  = number of _chunks_ (28 bits)
 
 **Example**
 
@@ -168,7 +168,7 @@ x
   = extension (110 or 111)
 
 e
-  = exponent
+  = exponent (16 bits)
 
 d
   = first digit (1 to 9)
@@ -207,7 +207,7 @@ If there is no need for an _explicit fractional part_, the variable length float
 
 Quantities should always be in **big endian** format for storage or exchange. This is because the textual representation of a quantity puts the most significant digit first.
 
-However, it is acceptable to use **little endian** format for local usage. The byte length of a quantity is always a multiple of _four_, so it is practical to handle the data as a sequence of _32 bit values_ (four bytes) using the platform natural endianness.
+However, it is acceptable to use **little endian** format for local usage. The byte length of a quantity is always a multiple of _four_, so it is practical to handle the data as a sequence of _32 bit values_ (four bytes) using the platform natural endianness. The extension bits and number of chunks may need to be duplicated or relocated when handling a quantity in _little endian_ format.
 
 ### Compression
 
@@ -243,10 +243,7 @@ _Floating point_ | 111 | any | 128 bit+ | other values
 ### Infinitesimal quantity
 
 Although the first digit of a floating point value would normally be between one and nine, nothing prevents from making it zero instead.
-
-For example, when converting from text to a quantity, floating point values may be detected by looking at a finite number of characters. When a decimal point appears after the detection point the quantity may already be written as a sequence of chunks without a first digit. It can be easily converted to a (non normalised) floating point value with _first digit = 0_.
-
-This introduction hints at how to write an infinitesimal quantity. A floating point value which first digit is zero and with zero chunks denotes a quantity which is equivalent to zero, such as _1/x when x ⟶ ∞_. It can be positive or negative. 
+A floating point value which first digit is zero and with zero chunks denotes a quantity which is equivalent to zero, such as _1/x when x ⟶ ∞_. It can be positive or negative.
 
 **Example**
 
@@ -254,6 +251,8 @@ This introduction hints at how to write an infinitesimal quantity. A floating po
 ~~~
 011100000000000000000000 000000000000000000000000
 ~~~
+
+Another use for zero as first digit is to recover from a parsing error. For example, when converting from text to a quantity, floating point values may be detected by looking at a finite number of characters. When a decimal point appears after the detection point the quantity may already be written as a sequence of chunks without a first digit. It can be easily converted to a (non normalised) floating point value with _first digit = 0_.
 
 ### Operations
 
